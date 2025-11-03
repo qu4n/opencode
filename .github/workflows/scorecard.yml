@@ -1,0 +1,38 @@
+name: "OSSF Scorecard"
+
+on:
+  # Run weekly on Monday at 4:00 AM UTC
+  schedule:
+    - cron: "0 4 * * 1"
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload the results to code-scanning dashboard
+      security-events: write
+      # Needed to publish results
+      id-token: write
+      # Needed to read repo contents
+      contents: read
+      # Needed to read repo metadata
+      actions: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Run analysis
+        uses: ossf/scorecard-action@v2.4.0
+        with:
+          results_file: results.json
+          results_format: json
+          # Publish results to OpenSSF REST API for easy access by consumers
+          publish_results: true

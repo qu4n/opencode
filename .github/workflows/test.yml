@@ -28,3 +28,17 @@ jobs:
           bun turbo test
         env:
           CI: true
+
+      - name: Audit npm dependencies
+        run: bun audit --audit-level=moderate || true
+        continue-on-error: true
+
+      - name: Check for known vulnerabilities in Go dependencies
+        working-directory: packages/sdk/go
+        run: |
+          if command -v go &> /dev/null; then
+            go list -json -m all | go run golang.org/x/vuln/cmd/govulncheck@latest -mode=binary || true
+          else
+            echo "Go not installed, skipping Go vulnerability check"
+          fi
+        continue-on-error: true

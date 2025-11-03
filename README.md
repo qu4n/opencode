@@ -13,6 +13,10 @@
   <a href="https://www.npmjs.com/package/opencode-ai"><img alt="npm" src="https://img.shields.io/npm/v/opencode-ai?style=flat-square" /></a>
   <a href="https://github.com/sst/opencode/actions/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/sst/opencode/publish.yml?style=flat-square&branch=dev" /></a>
 </p>
+<p align="center">
+  <a href="https://github.com/qu4n/opencode/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://img.shields.io/github/actions/workflow/status/qu4n/opencode/codeql.yml?style=flat-square&label=CodeQL&branch=dev" /></a>
+  <a href="https://github.com/qu4n/opencode/security/dependabot"><img alt="Dependabot" src="https://img.shields.io/badge/dependabot-enabled-blue.svg?style=flat-square" /></a>
+</p>
 
 [![OpenCode Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://opencode.ai)
 
