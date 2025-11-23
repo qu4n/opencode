@@ -118,12 +118,32 @@ export namespace Ripgrep {
     query?: string
     limit?: number
   }) {
-    const commands = [`${await filepath()} --files --hidden --glob='!.git/*'`]
+    const excludeGlobs = [
+      "!.git/*",
+      // Exclude virtual filesystems to prevent infinite loops
+      "!/sys/*",
+      "!/proc/*",
+      "!/dev/*",
+    ]
+    const globArgs = excludeGlobs.map(g => `--glob='${g}'`).join(" ")
+    const commands = [`${await filepath()} --files --hidden --no-follow ${globArgs}`]
     if (input.query)
       commands.push(`${await Fzf.filepath()} --filter=${input.query}`)
     if (input.limit) commands.push(`head -n ${input.limit}`)
     const joined = commands.join(" | ")
-    const result = await $`${{ raw: joined }}`.cwd(input.cwd).text()
-    return result.split("\n").filter(Boolean)
+    
+    // Add timeout to prevent infinite searches (30 seconds)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 30000)
+    
+    try {
+      const result = await $`${{ raw: joined }}`
+        .cwd(input.cwd)
+        .signal(controller.signal)
+        .text()
+      return result.split("\n").filter(Boolean)
+    } finally {
+      clearTimeout(timeout)
+    }
   }
 }
